@@ -10,7 +10,7 @@ const isSupabaseConfigured =
   SUPABASE_ANON_KEY.length > 20;
 
 // Public routes that never require authentication
-const PUBLIC_ROUTES = ["/login", "/auth/callback", "/unauthorized", "/change-password"];
+const PUBLIC_ROUTES = ["/login", "/auth/callback", "/unauthorized", "/change-password", "/home"];
 
 // Landing page is accessible to everyone but logged-in users get redirected to their home
 const LANDING_ROUTE = "/";
