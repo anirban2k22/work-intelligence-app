@@ -9,7 +9,7 @@ export default async function AdminDashboardPage() {
 
   const { data: profiles } = await supabase
     .from("profiles")
-    .select("role, status, full_name, display_name, created_at");
+    .select("role, status, full_name, display_name, created_at, users(email)");
 
   const total = profiles?.length ?? 0;
   const admins = profiles?.filter(p => p.role === "admin").length ?? 0;
@@ -71,6 +71,7 @@ export default async function AdminDashboardPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">{p.full_name ?? p.display_name ?? "—"}</p>
+                  <p className="text-xs text-gray-500">{(p as any).users?.email ?? "No email"}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
