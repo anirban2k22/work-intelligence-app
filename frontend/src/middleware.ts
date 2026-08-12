@@ -12,6 +12,9 @@ const isSupabaseConfigured =
 // Public routes that never require authentication
 const PUBLIC_ROUTES = ["/login", "/auth/callback", "/unauthorized", "/change-password"];
 
+// Landing page is accessible to everyone but logged-in users get redirected to their home
+const LANDING_ROUTE = "/";
+
 // Role → home dashboard mapping
 const ROLE_HOME: Record<string, string> = {
   admin: "/admin/dashboard",
@@ -48,9 +51,10 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const isPublicRoute = PUBLIC_ROUTES.some(r => pathname.startsWith(r));
+  const isLandingRoute = pathname === LANDING_ROUTE;
 
-  // Not logged in → send to login
-  if (!user && !isPublicRoute) {
+  // Not logged in → send to login (landing page is always accessible)
+  if (!user && !isPublicRoute && !isLandingRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
@@ -74,8 +78,8 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    // Redirect root / to role home
-    if (pathname === "/" || pathname === "") {
+    // Logged-in user on landing page → send to their role home
+    if (isLandingRoute) {
       const url = request.nextUrl.clone();
       url.pathname = ROLE_HOME[role] ?? "/dashboard";
       return NextResponse.redirect(url);

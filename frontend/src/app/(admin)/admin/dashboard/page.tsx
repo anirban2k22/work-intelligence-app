@@ -9,7 +9,14 @@ export default async function AdminDashboardPage() {
 
   const { data: profiles, error } = await supabase
     .from("profiles")
-    .select("role, status, full_name, display_name, created_at, users(email)");
+    .select("role, status, full_name, display_name, created_at, user_id");
+
+  const { data: authUsers } = await supabase
+    .from("users")
+    .select("id, email");
+
+  const emailMap: Record<string, string> = {};
+  (authUsers ?? []).forEach((u: any) => { emailMap[u.id] = u.email; });
 
   if (error) {
     console.error("Error fetching profiles:", error);
@@ -76,7 +83,7 @@ export default async function AdminDashboardPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-900">{p.full_name ?? p.display_name ?? "—"}</p>
-                  <p className="text-xs text-gray-500">{(p as any).users?.email ?? "No email"}</p>
+                  <p className="text-xs text-gray-500">{emailMap[p.user_id] ?? "No email"}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
