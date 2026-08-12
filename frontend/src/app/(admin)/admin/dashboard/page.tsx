@@ -7,16 +7,21 @@ export const dynamic = "force-dynamic";
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
 
-  const { data: profiles } = await supabase
+  const { data: profiles, error } = await supabase
     .from("profiles")
     .select("role, status, full_name, display_name, created_at, users(email)");
 
-  const total = profiles?.length ?? 0;
-  const admins = profiles?.filter(p => p.role === "admin").length ?? 0;
-  const managers = profiles?.filter(p => p.role === "manager").length ?? 0;
-  const employees = profiles?.filter(p => p.role === "employee").length ?? 0;
-  const active = profiles?.filter(p => p.status === "active").length ?? 0;
-  const invited = profiles?.filter(p => p.status === "invited").length ?? 0;
+  if (error) {
+    console.error("Error fetching profiles:", error);
+  }
+
+  const safeProfiles = profiles ?? [];
+  const total = safeProfiles.length;
+  const admins = safeProfiles.filter(p => p.role === "admin").length;
+  const managers = safeProfiles.filter(p => p.role === "manager").length;
+  const employees = safeProfiles.filter(p => p.role === "employee").length;
+  const active = safeProfiles.filter(p => p.status === "active").length;
+  const invited = safeProfiles.filter(p => p.status === "invited").length;
 
   // Recent work entries (last 7 days)
   const sevenAgo = new Date(Date.now() - 7 * 86400000).toLocaleDateString("en-CA");
