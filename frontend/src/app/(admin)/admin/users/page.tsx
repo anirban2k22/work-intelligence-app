@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { Users } from "lucide-react";
 import Link from "next/link";
+import { UserActionMenu } from "./components/UserActionMenu";
 
 export const metadata = { title: "Users | ProofX Admin" };
 export const dynamic = "force-dynamic";
@@ -46,6 +47,7 @@ export default async function AdminUsersPage() {
               <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Department</th>
               <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
               <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Joined</th>
+              <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -82,6 +84,9 @@ export default async function AdminUsersPage() {
                   </td>
                   <td className="px-6 py-4 text-gray-400 text-xs">
                     {p.created_at ? new Date(p.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <UserActionMenu userId={p.user_id} currentRole={p.role} currentStatus={p.status} />
                   </td>
                 </tr>
               );
