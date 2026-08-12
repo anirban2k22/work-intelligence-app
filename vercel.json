@@ -1,21 +1,23 @@
 {
-  "services": {
-    "frontend": {
-      "root": "frontend"
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/next"
     },
-    "backend": {
-      "root": "backend",
-      "entrypoint": "main:app"
+    {
+      "src": "backend/main.py",
+      "use": "@vercel/python"
     }
-  },
+  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": { "service": "backend" }
+      "destination": "/backend/main.py"
     },
     {
       "source": "/(.*)",
-      "destination": { "service": "frontend" }
+      "destination": "/frontend/$1"
     }
   ]
 }
